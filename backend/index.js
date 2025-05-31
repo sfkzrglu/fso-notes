@@ -3,9 +3,9 @@ const express = require('express')
 const Note = require('./models/note')
 
 const app = express()
-app.use(express.json())
 app.use(express.static('dist'))
-
+app.use(express.json())
+//app.use(requestLogger)
 
 app.get('/api/notes', (request, response) => {
     Note.find({}).then(notes => {
@@ -58,6 +58,12 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
